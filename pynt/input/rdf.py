@@ -7,8 +7,12 @@ import xml.sax
 # semi-standard modules
 try:
     import rdflib
-    from rdflib.Graph import Graph
-    from rdflib.Literal import Literal
+    if map(int, rdflib.__version__.split(".")) >= [3, 0, 0]:
+        from rdflib import Literal
+        from rdflib import ConjunctiveGraph as Graph
+    elif map(int, rdflib.__version__.split(".")) > [2, 1, 0]:
+        from rdflib.Graph import Graph
+        from rdflib.Literal import Literal
 except ImportError:
     raise ImportError("Module rdflib is not available. It can be downloaded from http://rdflib.net/\n")
 if map(int, rdflib.__version__.split(".")) < [2, 1, 0]:
