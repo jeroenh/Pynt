@@ -15,9 +15,6 @@ try:
         from rdflib.Literal import Literal
 except ImportError:
     raise ImportError("Module rdflib is not available. It can be downloaded from http://rdflib.net/\n")
-if map(int, rdflib.__version__.split(".")) < [2, 1, 0]:
-    # check for version of rdflib.
-    raise ImportError("The installed version of rdflib, %s, is too old. 2.1 or higher is required" % rdflib.__version__)
 # local modules
 import pynt.layers
 import pynt.elements

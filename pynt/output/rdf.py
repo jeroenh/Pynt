@@ -6,13 +6,14 @@ import logging
 # semi-standard modules
 try:
     import rdflib
-    from rdflib.Graph import Graph
-    from rdflib.Literal import Literal
+    if map(int, rdflib.__version__.split(".")) >= [3, 0, 0]:
+        from rdflib import Literal
+        from rdflib import ConjunctiveGraph as Graph
+    elif map(int, rdflib.__version__.split(".")) > [2, 1, 0]:
+        from rdflib.Graph import Graph
+        from rdflib.Literal import Literal
 except ImportError:
-    raise ImportError("Module rdflib is not available. It can be downloaded from http://rdflib.net/. \n")
-if map(int, rdflib.__version__.split(".")) < [2, 1, 0]:
-    # check for version of rdflib.
-    raise ImportError("The installed version of rdflib, %s, is too old. 2.1 or higher is required" % rdflib.__version__)
+    raise ImportError("Module rdflib is not available. It can be downloaded from http://rdflib.net/\n")
 # local modules
 import pynt.elements
 import pynt.layers
