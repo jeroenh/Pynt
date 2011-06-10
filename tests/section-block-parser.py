@@ -16,11 +16,16 @@ class TestParseSectionBlock(unittest.TestCase):
                 },
                 {
                 'string': r'TYPE=TRFC,NAME=\"Test customer, Cupertino\",PORTS=ETH-3&HSL-10,UPORTS=,SPORTS=',
-                'values': {'uports': '', 'sports': '', 'type': 'TRFC', 'name': r'\"Test customer, Cupertino\"', 'ports': 'ETH-3&HSL-10'}
+                'values': {'uports': '', 'sports': '', 'type': 'TRFC', 'name': r'Test customer, Cupertino', 'ports': 'ETH-3&HSL-10'}
+                },
+                {
+                'string': r'NAME=Test\,value1=test1',
+                'values': {'name': 'Test\\', 'value1': 'test1'}
                 }
                 ]
         for e in PSB_test:
-            self.assertEqual(tl1.ParseSectionBlock(e['string']), e['values'], 'Incorrectly parsed section block')
+            res = tl1.ParseSectionBlock(e['string'])
+            self.assertEqual(res, e['values'], 'Incorrectly parsed section block, expected: %s  output: %s' % (e['values'], res))
 
 
 if __name__ == '__main__':

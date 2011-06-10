@@ -35,6 +35,7 @@ def ParseSectionBlock(block):
     properties = {}
     for m in re.findall(regex['param'], block, re.VERBOSE):
         (name, value) = m.split("=")
+        value = re.sub(r'(^\\"|\\"$)', '', value)
         properties[name.lower()] = value
 
     return properties
