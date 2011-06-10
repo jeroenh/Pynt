@@ -15,14 +15,29 @@ import emulate
 
 
 def ParseSectionBlock(block):
-    """Convert a TL1 block consisting of multiple sections. That is, convert a
-    string 'var1=value,var2=value,var3=value' to a dictionary"""
-    block = block.split(",");   # split into a list of properties (name=value)
-    properties = {};
-    for ifproperty in block:
-        (name,value) = ifproperty.split("=");   # extract name and value
-        properties[name.lower()] = value;       # store in dictionary instead of list
-    return properties
+    """Convert a TL1 block consisting of multiple sections to a dictionary.
+
+		That is, convert a string 'var1=value,var2=value,var3=value' to a
+		dictionary. This will also handle quoted values, although you will need
+		to remove the quote characters yourself.
+	"""
+	regex = {}
+	regex['name'] = '[a-zA-Z0-9]+'
+	regex['safe_char'] = '[^";:,]'
+	regex['qsafe_char'] = '[^"]'
+
+	# the value of a parameter will either just be regular characters, ie
+	# safe_char or it will be quoted in case we only accepting inside
+	# doublequotes (") or escaped doublequotes (\")
+	regex['param_value'] = r"""(?:"|\\") %(qsafe_char)s * (?:"|\\") | %(safe_char)s + """ % regex
+	regex['param'] = r""" (?: %(name)s ) = (?: %(param_value)s )? """ % regex
+
+	properties = {}
+	for m in re.findall(regex['param'], block, re.VERBOSE):
+		(name, value) = m.split("=")
+		properties[name.lower()] = value
+
+	return properties
 
 
 
