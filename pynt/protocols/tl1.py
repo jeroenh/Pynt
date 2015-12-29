@@ -210,7 +210,7 @@ class TL1LanguageInput(base.BaseLangInput):
         statusRE     = re.compile(r'^([MA\*][\*C\^]?)\s+(\S+)\s([\w ]+)$');
         moreStatusRE = re.compile(r'^\s+([\w ]+)$');
         commentRE    = re.compile(r'^\s+/\*(.*)\*/');
-        resultRE     = re.compile(r'^\s+"([^\n]*)"$');
+        resultRE     = re.compile(r'^\s+"{0,1}([^\n]*)[,"]$');
         
         resultLines = resultString.split('\r\n');
         
