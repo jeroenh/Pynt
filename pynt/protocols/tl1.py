@@ -14,6 +14,63 @@ import base
 import emulate
 
 
+"""
+Example usage:
+
+from pynt.protocols.tl1 import SyncTL1Input, AsyncTL1Input, TL1EmulatorInput, ParseSectionBlock
+
+# Create an IO object for synchronous TL1 protocol
+hostname = "device.example.net"
+io = SyncTL1Input(hostname, port=3082)
+# Alternative, use asynchronous (multi-threaded, faster, but has a small change to leave stale processes behind when a crash occurs)
+io = AsyncTL1Input(hostname, port=3082)
+
+# optional set properties of TL1 behaviour
+io.setDefaultTimeout(10)
+io.hasecho = True
+# optionally log all TL1 to a file for debugging later
+io.setLogFile("path_to_logfile.log"):
+
+# start() calls connect(), login(), and authorize()
+io.username = 'johndoe'
+io.password = '1234abc'
+io.start()
+
+# send a command and wait for a result:
+resultlines = io.command("rtrv-cfg-fiber::all:ctag;")
+parseResult(resultlines)
+
+# Asynchronous alternative:
+io.callbackCommand("rtrv-cfg-fiber::all:ctag;", parseResult)
+# parseResult must be a function or method in the form function(resultlines) or function(resultlines, status)
+
+# Set handler for autonomous messages
+io.setAutonomousCallback(handleMessage)
+# It is possible to set different callback functions based on the type ("auto", "critical", "major" or "minor"):
+io.setAutonomousCallback(handleCriticalMessage, "critical")
+
+# stop() calls deauthorize(), disconnect(), and closeLogFile()
+io.stop()
+
+
+def parseResult(resultlines):
+    for line in resultlines:
+        # line looks like: 
+        # "GGN:PORTID=20064,PORTNAME=to 5530-stack #4,PORTDIR=output,PORTHEALTH=good,PORTCAT=nor,PORTPRIV=0x1"
+        
+        # First turn the line into a dictionary
+        parts = line.split(":")
+        properties = ParseSectionBlock(parts[1]) 
+        # properties now looks like: {PORTID:"10064",IPORTNAME:"from 5530-stack #4",PORTDIR:"input",...}
+        
+        # store the result or do something useful...
+
+# While writing your parseResult() function, you may want to use an emulator that reads the TL1 that you previously stored in a log file:
+logfile = "path_to_logfile.log"
+io = TL1EmulatorInput(logfile)
+"""
+
+
 def ParseSectionBlock(block):
     """Convert a TL1 block consisting of multiple sections to a dictionary.
 
